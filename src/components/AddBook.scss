@@ -1,0 +1,31 @@
+.add-book {
+  display: flex;
+  flex-direction: column;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+
+    &__label {
+      width: 100px;
+    }
+
+    &__icon {
+      cursor: pointer;
+      margin: 8px;
+    }
+
+    &__icon.add-book__row__icon--uploaded {
+      opacity: 0.5;
+    }
+
+    &__input {
+      padding: 12px 18px;
+    }
+  }
+}
+
+.display-none {
+  display: none;
+}
