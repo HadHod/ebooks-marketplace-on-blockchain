@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { ethers } from 'ethers';
-import BooksMarketplace from './../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
+import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import './AddBook.scss';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
 // import pdfIcon from '../../public/images/pdf_icon.png';
@@ -9,14 +9,14 @@ import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
 
 // TODO add webpack https://medium.com/age-of-awareness/setup-react-with-webpack-and-babel-5114a14a47e9
 
-function AddBook() {
+function AddBook():ReactElement {
   const [newBookPrice, setNewBookPrice] = useState(0);
 
-  async function requestAccount() {
+  async function requestAccount(): Promise<void> {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
   }
 
-  async function addBook() {
+  async function addBook(): Promise<void> {
     const { ethereum } = window;
     if (typeof ethereum === 'undefined') {
       return;
@@ -44,26 +44,28 @@ function AddBook() {
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Title</div>
-        <input className="add-book__row__input" type="text" placeholder="Book title"></input>
+        <input className="add-book__row__input" type="text" placeholder="Book title" />
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Description</div>
-        <input className="add-book__row__input" type="text" placeholder="description"></input>
+        <input className="add-book__row__input" type="text" placeholder="description" />
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Price</div>
-        <input className="add-book__row__input" type="number" min="0.01" step="0.01" onChange={e => setNewBookPrice(parseInt(e.target.value, 10))} placeholder="Price in ETH" />
+        <input className="add-book__row__input" type="number" min="0.01" step="0.01" onChange={(e) => setNewBookPrice(parseInt(e.target.value, 10))} placeholder="Price in ETH" />
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Files</div>
         <div>
           <label>
             <input type="file" accept="application/pdf" className="display-none" />
-            <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/267px-PDF_file_icon.svg.png" alt="upload pdf file" width="28" height="40"></img>
+            {/* eslint-disable */}
+            <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/267px-PDF_file_icon.svg.png" alt="upload pdf file" width="28" height="40" />
           </label>
           <label>
+            {/* eslint-disable */}
             <input type="file" accept="application/epub+zip" className="display-none" />
-            <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Icon_epub_file.svg/334px-Icon_epub_file.svg.png" alt="upload pdf file" width="28" height="40"></img>
+            <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Icon_epub_file.svg/334px-Icon_epub_file.svg.png" alt="upload pdf file" width="28" height="40" />
           </label>
         </div>
       </div>

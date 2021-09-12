@@ -1,17 +1,18 @@
-import './App.scss';
+import React, { ReactElement } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link,
-} from "react-router-dom";
+} from 'react-router-dom';
+import './App.scss';
 import Home from './components/Home';
 import AddBook from './components/AddBook';
 
 // TODO add linter
 // TODO add mobile styles
 
-function App() {
+function App(): ReactElement {
   return (
     <Router>
       <div className="app">
