@@ -9,7 +9,7 @@ import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
 
 // TODO add webpack https://medium.com/age-of-awareness/setup-react-with-webpack-and-babel-5114a14a47e9
 
-function AddBook():ReactElement {
+function AddBook(): ReactElement {
   const [newBookPrice, setNewBookPrice] = useState(0);
 
   async function requestAccount(): Promise<void> {

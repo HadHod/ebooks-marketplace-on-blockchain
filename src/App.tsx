@@ -1,4 +1,5 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
+import { ethers } from 'ethers';
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,10 +10,31 @@ import './App.scss';
 import Home from './components/Home';
 import AddBook from './components/AddBook';
 
-// TODO add linter
 // TODO add mobile styles
 
 function App(): ReactElement {
+  const [userName, setUserName] = useState('');
+
+  function getLastChars(word: string, chars: number): string {
+    return word.substr(word.length - chars);
+  }
+
+  async function requestAccount(): Promise<void> {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+  }
+
+  async function connectWallet(): Promise<void> {
+    const { ethereum } = window;
+    if (typeof ethereum === 'undefined' || userName !== '') {
+      return;
+    }
+    await requestAccount();
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+    setUserName(address);
+  }
+
   return (
     <Router>
       <div className="app">
@@ -23,7 +45,9 @@ function App(): ReactElement {
           </div>
           <div className="app__navigation__actions">
             <Link className="app__navigation__link" to="/add-book">Add</Link>
-            <Link className="app__navigation__link" to="/">Connect</Link>
+            <button className="app__navigation__link app__navigation__link--connect-button" onClick={connectWallet} type="button">
+              { userName === '' ? 'Connect' : `...${getLastChars(userName, 4)}` }
+            </button>
           </div>
         </nav>
 

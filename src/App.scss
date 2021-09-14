@@ -47,6 +47,11 @@ $link-size: 24px;
       height: $link-size;
       text-decoration: none;
 
+      &--connect-button {
+        padding: 44px;
+        background-color: $main-background;
+      }
+
       &:hover {
         color: $hover;
         border: 2px solid $hover;
