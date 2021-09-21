@@ -59,17 +59,18 @@ function AddBook(): ReactElement {
         <div>
           <label>
             <input type="file" accept="application/pdf" className="display-none" />
-            {/* eslint-disable */}
+            {/* eslint-disable-next-line */}
             <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/267px-PDF_file_icon.svg.png" alt="upload pdf file" width="28" height="40" />
           </label>
           <label>
-            {/* eslint-disable */}
             <input type="file" accept="application/epub+zip" className="display-none" />
+            {/* eslint-disable-next-line */}
             <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Icon_epub_file.svg/334px-Icon_epub_file.svg.png" alt="upload pdf file" width="28" height="40" />
           </label>
         </div>
       </div>
 
+      {/* eslint-disable-next-line */}
       <button className="ebm__button" onClick={addBook} disabled={newBookPrice === 0}>Add Book</button>
     </div>
   );

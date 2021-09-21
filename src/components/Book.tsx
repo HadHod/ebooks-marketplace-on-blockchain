@@ -1,17 +1,55 @@
 import React, { ReactElement } from 'react';
 import './Book.scss';
+import { ethers } from 'ethers';
 import classNames from 'classnames';
+import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
 
 interface IBook {
+  id: string;
   isAvailable: boolean;
   numberOfSold: number;
   price: number;
   ethPrice: number;
 }
 
-function Book({ isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
+function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
   const cover: string = 'https://images-na.ssl-images-amazon.com/images/I/41KdeY0zfOL._SX346_BO1,204,203,200_.jpg';
   const content: string = isAvailable ? 'Download (.pdf & .epub)' : `Buy (${price} ETH ≈ $${price * ethPrice})`;
+
+  async function requestAccount(): Promise<void> {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+  }
+
+  async function onClick(): Promise<void> {
+    if (isAvailable) {
+      /* eslint-disable-next-line */
+      alert('Downloading ...');
+    } else {
+      const { ethereum } = window;
+      if (typeof ethereum === 'undefined') {
+        return;
+      }
+
+      await requestAccount();
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, signer);
+      try {
+        /* eslint-disable-next-line */
+        const priceString: string = price.toString() + '.0';
+        /* eslint-disable-next-line */
+        console.log('priceString', priceString);
+        const transaction = await contract.buyBook(id, { value: ethers.utils.parseEther(priceString) });
+        await transaction.wait();
+        /* eslint-disable-next-line */
+        console.log('data', transaction);
+      } catch (err) {
+        /* eslint-disable-next-line */
+        console.log(err);
+      }
+    }
+  }
 
   return (
     <div className="book">
@@ -26,12 +64,13 @@ function Book({ isAvailable, numberOfSold, price, ethPrice }: IBook): ReactEleme
 
       <div className="book__content">
         <h3 className="book__content__title">Token Economy: How the Web3 reinvents the Internet</h3>
-        {/* eslint-disable */}
+        {/* eslint-disable-next-line */}
         <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed eros vel dolor dignissim iaculis. Duis eu ligula feugiat, pulvinar leo a, pharetra leo. Sed at accumsan felis. Suspendisse quis elit euismod, maximus leo quis, lobortis urna. Nunc interdum elit ac magna scelerisque mollis. Ut non scelerisque purus, sed luctus magna. Mauris semper mauris sem, non maximus enim fringilla vel. Aliquam vitae neque at erat ultricies posuere. Vestibulum tincidunt libero felis, eu blandit nulla hendrerit eu. Praesent velit nulla, blandit quis semper sed, facilisis ac enim.</div>
       </div>
 
       <div>
-        <button className={classNames('ebm__button', 'book-button', {
+        {/* eslint-disable-next-line */}
+        <button onClick={onClick} className={classNames('ebm__button', 'book-button', {
           'ebm__button--available': isAvailable,
         })}
         >

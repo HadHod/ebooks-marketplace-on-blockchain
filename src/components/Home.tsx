@@ -27,7 +27,7 @@ function Home(): ReactElement {
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     try {
       const data = await contract.getBooks();
-      /* eslint-disable */
+      /* eslint-disable-next-line */
       console.log(data);
       const [booksIds, prices] = data;
       setBooks(booksIds.map((bookId: string, index: number) => ({
@@ -50,7 +50,7 @@ function Home(): ReactElement {
     <div className="home">
       {isLoading && <div>Loading</div>}
       {!isLoading && books.length === 0 && <div>No books to display</div>}
-      {books.map(({ id, price }, i) => <Book key={id} isAvailable={i % 2 === 0} numberOfSold={getRandomInt(1000)} price={price} ethPrice={ethPrice} />)}
+      {books.map(({ id, price }, i) => <Book key={id} id={id} isAvailable={i % 2 === 0} numberOfSold={getRandomInt(1000)} price={price} ethPrice={ethPrice} />)}
     </div>
   );
 }

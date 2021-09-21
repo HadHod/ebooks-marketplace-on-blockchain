@@ -5,7 +5,7 @@ contract Ownable {
   address private owner;
 
   constructor() {
-    owner = msg.sender;
+    owner = payable(msg.sender);
   }
 
   function getOwner() public view returns(address) {

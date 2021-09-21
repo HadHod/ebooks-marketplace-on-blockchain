@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 declare global {
-  /* eslint-disable */
+  /* eslint-disable-next-line */
   interface Window { ethereum: any; }
 }
 window.ethereum = window.ethereum || {};
