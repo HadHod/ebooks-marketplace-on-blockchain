@@ -36,14 +36,10 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
       const signer = provider.getSigner();
       const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, signer);
       try {
-        /* eslint-disable-next-line */
-        const priceString: string = price.toString() + '.0';
-        /* eslint-disable-next-line */
-        console.log('priceString', priceString);
-        const transaction = await contract.buyBook(id, { value: ethers.utils.parseEther(priceString) });
+        const transaction = await contract.buyBook(id, { value: ethers.utils.parseEther(price.toString()) });
         await transaction.wait();
         /* eslint-disable-next-line */
-        console.log('data', transaction);
+        // alert('Book successfuly puchased');
       } catch (err) {
         /* eslint-disable-next-line */
         console.log(err);

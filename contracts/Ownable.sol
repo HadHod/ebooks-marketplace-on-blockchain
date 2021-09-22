@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.4;
 
 contract Ownable {
@@ -8,7 +8,7 @@ contract Ownable {
     owner = payable(msg.sender);
   }
 
-  function getOwner() public view returns(address) {
+  function getOwner() public view returns (address) {
     return owner;
   }
 
@@ -17,7 +17,7 @@ contract Ownable {
     _;
   }
 
-  function isOwner() public view returns(bool) {
+  function isOwner() public view returns (bool) {
     return msg.sender == owner;
   }
 }
