@@ -16,6 +16,7 @@ contract BooksMarketplace is Ownable {
   string[] private booksIds;
   mapping(string => uint256) private booksIdToPrice;
   mapping(address => string[]) private addressToBooksIds;
+  mapping(string => uint256) private booksIdToNumberOfSold;
 
   function addBook(string memory _bookId, uint256 _price) external onlyOwner {
     require(booksIdToPrice[_bookId] == 0, 'id already exists');
@@ -38,14 +39,16 @@ contract BooksMarketplace is Ownable {
     booksIdToPrice[_bookId] = 0;
   }
 
-  function getBooks() external view returns (string[] memory, uint256[] memory, bool[] memory) {
-    uint256[] memory prices = new uint[](booksIds.length);
+  function getBooks() external view returns (string[] memory, uint256[] memory, bool[] memory, uint256[] memory) {
+    uint256[] memory prices = new uint256[](booksIds.length);
     bool[] memory available = new bool[](booksIds.length);
+    uint256[] memory sold = new uint256[](booksIds.length);
     for (uint256 i = 0; i < booksIds.length; i++) {
       prices[i] = booksIdToPrice[booksIds[i]];
       available[i] = isBookAvailable(booksIds[i]);
+      sold[i] = booksIdToNumberOfSold[booksIds[i]];
     }
-    return (booksIds, prices, available);
+    return (booksIds, prices, available, sold);
   }
 
   function getPrice(string memory id) external view returns (uint256) {
@@ -61,6 +64,7 @@ contract BooksMarketplace is Ownable {
     require(msg.value == price, 'wrong value');
     require(!isBookAvailable(_bookId), 'book already purchased');
     addressToBooksIds[msg.sender].push(_bookId);
+    booksIdToNumberOfSold[_bookId] += 1;
     emit BooksUpdated();
   }
 

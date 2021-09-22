@@ -8,10 +8,6 @@ import './Home.scss';
 // TODO login to metamask https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial
 // TODO DL ETH price via the Graph https://thegraph.com/explorer/subgraph?id=0x4bb4c1b0745ef7b4642feeccd0740dec417ca0a0-0&view=Playground
 
-function getRandomInt(max: number): number {
-  return Math.floor(Math.random() * max);
-}
-
 function Home(): ReactElement {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,11 +25,12 @@ function Home(): ReactElement {
       const booksData = await contract.getBooks();
       /* eslint-disable-next-line */
       console.log(booksData);
-      const [booksIds, prices, available] = booksData;
+      const [booksIds, prices, available, sold] = booksData;
       setBooks(booksIds.map((bookId: string, index: number) => ({
         id: bookId,
         price: parseInt(prices[index], 16),
         isAvailable: available[index],
+        numberOfSold: parseInt(sold[index], 16),
       })));
     } catch (err) {
       setBooks([]);
@@ -63,8 +60,12 @@ function Home(): ReactElement {
   return (
     <div className="home">
       {isLoading && <div>Loading</div>}
-      {!isLoading && books.length === 0 && <div>No books to display</div>}
-      {books.map(({ id, price, isAvailable }) => <Book key={id} id={id} isAvailable={isAvailable} numberOfSold={getRandomInt(1000)} price={price} ethPrice={ethPrice} />)}
+
+      {!isLoading && books.length === 0 && <div>Library is empty</div>}
+
+      {books.map(({ id, price, isAvailable, numberOfSold }) => (
+        <Book key={id} id={id} price={price} isAvailable={isAvailable} numberOfSold={numberOfSold} ethPrice={ethPrice} />
+      ))}
     </div>
   );
 }
