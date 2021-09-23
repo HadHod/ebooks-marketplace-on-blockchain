@@ -1,17 +1,26 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import { useQuery, gql, DocumentNode } from '@apollo/client';
 import Book from './Book';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
 import './Home.scss';
 
+const ETH_PRICE_QUERY: DocumentNode = gql`
+  {
+    bundles {
+      ethPrice
+    }
+  }
+`;
+
 // TODO login to metamask https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial
-// TODO DL ETH price via the Graph https://thegraph.com/explorer/subgraph?id=0x4bb4c1b0745ef7b4642feeccd0740dec417ca0a0-0&view=Playground
 
 function Home(): ReactElement {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [ethPrice, setEthPrice] = useState(0);
+  const { data } = useQuery(ETH_PRICE_QUERY);
+  const ethPrice: number = parseInt(data?.bundles[0].ethPrice || 0, 10);
 
   async function getBooks(): Promise<void> {
     setIsLoading(true);
@@ -22,10 +31,7 @@ function Home(): ReactElement {
     const provider = new ethers.providers.Web3Provider(ethereum);
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     try {
-      const booksData = await contract.getBooks();
-      /* eslint-disable-next-line */
-      console.log(booksData);
-      const [booksIds, prices, available, sold] = booksData;
+      const [booksIds, prices, available, sold] = await contract.getBooks();
       setBooks(booksIds.map((bookId: string, index: number) => ({
         id: bookId,
         price: parseInt(prices[index], 16),
@@ -54,7 +60,6 @@ function Home(): ReactElement {
   useEffect(() => {
     getBooks();
     watchEvents();
-    setEthPrice(3356);
   }, []);
 
   return (

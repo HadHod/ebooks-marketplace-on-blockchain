@@ -10,8 +10,6 @@ import './App.scss';
 import Home from './components/Home';
 import AddBook from './components/AddBook';
 
-// TODO add mobile styles
-
 function App(): ReactElement {
   const [userName, setUserName] = useState('');
 
