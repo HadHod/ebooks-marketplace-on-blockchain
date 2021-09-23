@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import {
   BrowserRouter as Router,
@@ -9,9 +9,13 @@ import {
 import './App.scss';
 import Home from './components/Home';
 import AddBook from './components/AddBook';
+import BooksMarketplace from './artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from './Constants';
 
 function App(): ReactElement {
   const [userName, setUserName] = useState('');
+  const [isOwner, setIsOwner] = useState(false);
+  const [balance, setBalance] = useState(0);
 
   function getLastChars(word: string, chars: number): string {
     return word.substr(word.length - chars);
@@ -33,6 +37,30 @@ function App(): ReactElement {
     setUserName(address);
   }
 
+  async function updateOwnerStatusAndBalance(): Promise<void> {
+    const { ethereum } = window;
+    if (typeof ethereum === 'undefined') {
+      return;
+    }
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
+    try {
+      setBalance(parseInt(await contract.getBalance(), 16));
+      setIsOwner(true);
+    } catch (err) {
+      setBalance(0);
+      setIsOwner(false);
+    }
+  }
+
+  useEffect(() => {
+    updateOwnerStatusAndBalance();
+  }, []);
+
+  function getTreasuryBalanceValue(): string {
+    return `In treasury: ${balance.toFixed(2)} ETH`;
+  }
+
   return (
     <Router>
       <div className="app">
@@ -42,7 +70,8 @@ function App(): ReactElement {
             <span>Buy ebooks with ETH</span>
           </div>
           <div className="app__navigation__actions">
-            <Link className="app__navigation__link" to="/add-book">Add</Link>
+            {isOwner && <span className="app__navigation__actions__treasury">{ getTreasuryBalanceValue() }</span>}
+            {isOwner && <Link className="app__navigation__link" to="/add-book">Add</Link>}
             <button className="app__navigation__link app__navigation__link--connect-button" onClick={connectWallet} type="button">
               { userName === '' ? 'Connect' : `...${getLastChars(userName, 4)}` }
             </button>

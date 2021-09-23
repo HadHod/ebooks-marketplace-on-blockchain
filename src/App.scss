@@ -30,6 +30,12 @@ $link-size: 24px;
     &__actions {
       display: flex;
 
+      &__treasury {
+        display: flex;
+        align-items: center;
+        margin-right: 16px;
+      }
+
       .app__navigation__link:not(:last-child) {
         margin-right: 16px;
       }

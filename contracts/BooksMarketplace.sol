@@ -51,11 +51,7 @@ contract BooksMarketplace is Ownable {
     return (booksIds, prices, available, sold);
   }
 
-  function getPrice(string memory id) external view returns (uint256) {
-    return booksIdToPrice[id];
-  }
-
-  function balanceOf() external view returns (uint256) {
+  function getBalance() external view onlyOwner returns (uint256) {
     return address(this).balance;
   }
 
