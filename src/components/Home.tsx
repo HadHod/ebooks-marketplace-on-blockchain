@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { useQuery, gql, DocumentNode } from '@apollo/client';
 import Book from './Book';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
@@ -13,8 +13,6 @@ const ETH_PRICE_QUERY: DocumentNode = gql`
     }
   }
 `;
-
-// TODO login to metamask https://www.toptal.com/ethereum/one-click-login-flows-a-metamask-tutorial
 
 function Home(): ReactElement {
   const [books, setBooks] = useState([]);

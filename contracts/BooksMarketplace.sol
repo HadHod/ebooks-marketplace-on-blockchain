@@ -3,14 +3,12 @@ pragma solidity ^0.8.4;
 
 import "hardhat/console.sol";
 import "./Ownable.sol";
-// import "./ArrayUtils.sol";
 
-// TODO unit tests
-// TODO utils library
+// TODO send money to owner
+// TODO edit price
+// TODO assign every book to owner
 
 contract BooksMarketplace is Ownable {
-  // using ArrayUtils for string[];
-
   event BooksUpdated();
 
   string[] private booksIds;
@@ -24,17 +22,18 @@ contract BooksMarketplace is Ownable {
     booksIdToPrice[_bookId] = _price;
   }
 
-  function indexOf(string[] memory _values, string memory _value) pure private returns (uint256) {
+  function indexOf(string[] memory _values, string memory _value) pure private returns (uint256, bool) {
     for (uint256 i=0; i<_values.length; i++) {
       if (keccak256(bytes(_values[i])) == keccak256(bytes(_value))) {
-        return i;
+        return (i, true);
       }
     }
-    return _values.length + 1; // TODO how to return index not found
+    return (0, false);
   }
 
   function removeBook(string memory _bookId) external onlyOwner {
-    uint256 index = indexOf(booksIds, _bookId);
+    (uint256 index, bool isAvailable) = indexOf(booksIds, _bookId);
+    require(isAvailable, 'Book does not exists');
     delete booksIds[index];
     booksIdToPrice[_bookId] = 0;
   }
@@ -43,9 +42,10 @@ contract BooksMarketplace is Ownable {
     uint256[] memory prices = new uint256[](booksIds.length);
     bool[] memory available = new bool[](booksIds.length);
     uint256[] memory sold = new uint256[](booksIds.length);
+
     for (uint256 i = 0; i < booksIds.length; i++) {
       prices[i] = booksIdToPrice[booksIds[i]];
-      available[i] = isBookAvailable(booksIds[i]);
+      available[i] = isBookAvailableForSender(booksIds[i]);
       sold[i] = booksIdToNumberOfSold[booksIds[i]];
     }
     return (booksIds, prices, available, sold);
@@ -58,13 +58,13 @@ contract BooksMarketplace is Ownable {
   function buyBook(string memory _bookId) external payable {
     uint256 price = booksIdToPrice[_bookId];
     require(msg.value == price, 'wrong value');
-    require(!isBookAvailable(_bookId), 'book already purchased');
+    require(!isBookAvailableForSender(_bookId), 'book already purchased');
     addressToBooksIds[msg.sender].push(_bookId);
     booksIdToNumberOfSold[_bookId] += 1;
     emit BooksUpdated();
   }
 
-  function isBookAvailable(string memory _bookId) public view returns (bool) {
+  function isBookAvailableForSender(string memory _bookId) public view returns (bool) {
     string[] memory _booksIds = addressToBooksIds[msg.sender];
     for (uint i=0; i<_booksIds.length; i++) {
       if (keccak256(bytes(_booksIds[i])) == keccak256(bytes(_bookId))) {
