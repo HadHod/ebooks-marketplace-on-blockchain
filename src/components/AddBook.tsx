@@ -1,5 +1,5 @@
-import React, { ReactElement, useState } from 'react';
-import { ethers } from 'ethers';
+import React, { ReactElement, useEffect, useState } from 'react';
+import { BigNumber, ethers } from 'ethers';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import './AddBook.scss';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
@@ -9,8 +9,12 @@ import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
 
 // TODO add webpack https://medium.com/age-of-awareness/setup-react-with-webpack-and-babel-5114a14a47e9
 
+const STEP: string = '0.0001';
+const DEFAULT_PRICE: BigNumber = BigNumber.from('0');
+
 function AddBook(): ReactElement {
-  const [newBookPrice, setNewBookPrice] = useState(0);
+  const [price, setPrice] = useState(DEFAULT_PRICE);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   async function requestAccount(): Promise<void> {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -26,11 +30,18 @@ function AddBook(): ReactElement {
     const signer = provider.getSigner();
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, signer);
     const randomId: string = Math.random().toString(32).substr(2, 9); // TODO get id from DB
-    const transaction = await contract.addBook(randomId, newBookPrice);
-    await transaction.wait();
+    try {
+      const transaction = await contract.addBook(randomId, price);
+      await transaction.wait();
+    } catch (error: unknown) {
+      /* eslint-disable-next-line */
+      console.log(error);
+    }
   }
 
-  // TODO Cover floating numbers
+  useEffect(() => {
+    setIsDisabled(price === DEFAULT_PRICE);
+  }, [price]);
 
   return (
     <div className="add-book">
@@ -44,7 +55,7 @@ function AddBook(): ReactElement {
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Title</div>
-        <input className="add-book__row__input" type="text" placeholder="Book title" />
+        <input className="add-book__row__input" type="text" placeholder="title" />
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Description</div>
@@ -52,7 +63,14 @@ function AddBook(): ReactElement {
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Price</div>
-        <input className="add-book__row__input" type="number" min="0.01" step="0.01" onChange={(e) => setNewBookPrice(parseInt(e.target.value, 10))} placeholder="Price in ETH" />
+        <input
+          className="add-book__row__input"
+          type="number"
+          min={STEP}
+          step={STEP}
+          onChange={(e) => setPrice(ethers.utils.parseEther(e.target.value))}
+          placeholder="Price in ETH"
+        />
       </div>
       <div className="add-book__row">
         <div className="add-book__row__label">Files</div>
@@ -70,8 +88,7 @@ function AddBook(): ReactElement {
         </div>
       </div>
 
-      {/* eslint-disable-next-line */}
-      <button className="ebm__button" onClick={addBook} disabled={newBookPrice === 0}>Add Book</button>
+      <button className="ebm__button" onClick={addBook} disabled={isDisabled} type="button">Add Book</button>
     </div>
   );
 }

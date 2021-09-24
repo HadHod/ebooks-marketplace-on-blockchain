@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import './Book.scss';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import classNames from 'classnames';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
@@ -9,13 +9,14 @@ interface IBook {
   id: string;
   isAvailable: boolean;
   numberOfSold: number;
-  price: number;
+  price: BigNumber;
   ethPrice: number;
 }
 
 function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
+  const priceInETH: number = parseInt(ethers.utils.formatEther(price), 10);
   const cover: string = 'https://images-na.ssl-images-amazon.com/images/I/41KdeY0zfOL._SX346_BO1,204,203,200_.jpg';
-  const content: string = isAvailable ? 'Download (.pdf & .epub)' : `Buy (${price} ETH ≈ $${price * ethPrice})`;
+  const content: string = isAvailable ? 'Download (.pdf & .epub)' : `Buy (${priceInETH} ETH ≈ $${priceInETH * ethPrice})`;
 
   async function requestAccount(): Promise<void> {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -36,7 +37,7 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
       const signer = provider.getSigner();
       const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, signer);
       try {
-        const transaction = await contract.buyBook(id, { value: ethers.utils.parseEther(price.toString()) });
+        const transaction = await contract.buyBook(id, { value: price });
         await transaction.wait();
         /* eslint-disable-next-line */
         // alert('Book successfuly puchased');

@@ -56,7 +56,7 @@ contract BooksMarketplace is Ownable {
   }
 
   function buyBook(string memory _bookId) external payable {
-    uint256 price = booksIdToPrice[_bookId] * 10**18;
+    uint256 price = booksIdToPrice[_bookId];
     require(msg.value == price, 'wrong value');
     require(!isBookAvailable(_bookId), 'book already purchased');
     addressToBooksIds[msg.sender].push(_bookId);

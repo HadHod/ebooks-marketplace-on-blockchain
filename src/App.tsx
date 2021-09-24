@@ -15,7 +15,7 @@ import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from './Constants';
 function App(): ReactElement {
   const [userName, setUserName] = useState('');
   const [isOwner, setIsOwner] = useState(false);
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState('0');
 
   function getLastChars(word: string, chars: number): string {
     return word.substr(word.length - chars);
@@ -45,10 +45,10 @@ function App(): ReactElement {
     const provider = new ethers.providers.Web3Provider(ethereum);
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     try {
-      setBalance(parseInt(await contract.getBalance(), 16));
+      setBalance(ethers.utils.formatEther(await contract.getBalance()));
       setIsOwner(true);
     } catch (err) {
-      setBalance(0);
+      setBalance('0');
       setIsOwner(false);
     }
   }
@@ -58,7 +58,7 @@ function App(): ReactElement {
   }, []);
 
   function getTreasuryBalanceValue(): string {
-    return `In treasury: ${balance.toFixed(2)} ETH`;
+    return `In treasury: ${balance} ETH`;
   }
 
   return (

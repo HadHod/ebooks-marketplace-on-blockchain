@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useQuery, gql, DocumentNode } from '@apollo/client';
 import Book from './Book';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
@@ -34,7 +34,7 @@ function Home(): ReactElement {
       const [booksIds, prices, available, sold] = await contract.getBooks();
       setBooks(booksIds.map((bookId: string, index: number) => ({
         id: bookId,
-        price: parseInt(prices[index], 16),
+        price: prices[index],
         isAvailable: available[index],
         numberOfSold: parseInt(sold[index], 16),
       })));
