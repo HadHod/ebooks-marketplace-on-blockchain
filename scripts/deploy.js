@@ -3,17 +3,14 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-/* eslint-disable-next-line */
 const hre = require('hardhat');
 
-/* eslint-disable-next-line */
 async function main() {
   const BooksMarketplace = await hre.ethers.getContractFactory('BooksMarketplace');
   const booksMarketplace = await BooksMarketplace.deploy();
 
   await booksMarketplace.deployed();
 
-  /* eslint-disable-next-line */
   console.log('BooksMarketplace deployed to:', booksMarketplace.address);
 }
 
@@ -22,7 +19,6 @@ async function main() {
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    /* eslint-disable-next-line */
     console.error(error);
     process.exit(1);
   });
