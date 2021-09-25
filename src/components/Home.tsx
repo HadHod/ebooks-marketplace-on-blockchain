@@ -1,18 +1,12 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import { useQuery, gql, DocumentNode } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Book from './Book';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
+import { ETH_PRICE_QUERY } from '../shared/GraphQLQueries';
+import { Loader } from '../shared/components/Loader';
 import './Home.scss';
-
-const ETH_PRICE_QUERY: DocumentNode = gql`
-  {
-    bundles {
-      ethPrice
-    }
-  }
-`;
 
 function Home(): ReactElement {
   const [books, setBooks] = useState([]);
@@ -60,13 +54,10 @@ function Home(): ReactElement {
     watchEvents();
   }, []);
 
-  function loader(): ReactElement {
+  function showLoader(): ReactElement {
     return (
       <div className="loader-wrapper">
-        <div className="lds-ripple">
-          <div />
-          <div />
-        </div>
+        <Loader />
       </div>
     );
   }
@@ -86,7 +77,7 @@ function Home(): ReactElement {
 
   return (
     <div className="home">
-      {isLoading && loader()}
+      {isLoading && showLoader()}
 
       {!isLoading && books.length === 0 && libraryIsEmpty()}
 

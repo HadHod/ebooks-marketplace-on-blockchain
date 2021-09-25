@@ -11,19 +11,16 @@ import Home from './components/Home';
 import AddBook from './components/AddBook';
 import BooksMarketplace from './artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from './Constants';
+import { getLastChars, requestAccount } from './shared/UtilityFunctions';
+
+// TODO Notification
+// TODO Error handling
+// TODO connect wallet
 
 function App(): ReactElement {
   const [userName, setUserName] = useState('');
   const [isOwner, setIsOwner] = useState(false);
   const [balance, setBalance] = useState('0');
-
-  function getLastChars(word: string, chars: number): string {
-    return word.substr(word.length - chars);
-  }
-
-  async function requestAccount(): Promise<void> {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-  }
 
   async function connectWallet(): Promise<void> {
     const { ethereum } = window;

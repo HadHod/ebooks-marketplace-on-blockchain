@@ -1,4 +1,4 @@
-@import "../styles/Palette.scss";
+@import "../shared/styles/Palette.scss";
 
 .book {
   display: flex;
@@ -13,7 +13,7 @@
     .book__image-container {
       position: relative;
       text-align: center;
-  
+
       &__text {
         position: absolute;
         top: 50%;
@@ -21,7 +21,7 @@
         transform: translate(-50%, -50%);
         display: block;
       }
-  
+
       &__image {
         opacity: 0.1;
       }

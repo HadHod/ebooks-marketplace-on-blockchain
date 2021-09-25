@@ -1,25 +1,15 @@
 import React, { ReactElement } from 'react';
 import './Book.scss';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import classNames from 'classnames';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
-
-interface IBook {
-  id: string;
-  isAvailable: boolean;
-  numberOfSold: number;
-  price: BigNumber;
-  ethPrice: number;
-}
+import { IBook } from '../shared/interfaces/IBook';
+import { requestAccount } from '../shared/UtilityFunctions';
 
 function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
   const priceInETH: number = parseFloat(ethers.utils.formatEther(price));
   const content: string = isAvailable ? 'Download (.pdf & .epub)' : `Buy (${priceInETH} ETH ≈ $${priceInETH * ethPrice})`;
-
-  async function requestAccount(): Promise<void> {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-  }
 
   async function onClick(): Promise<void> {
     if (isAvailable) {
