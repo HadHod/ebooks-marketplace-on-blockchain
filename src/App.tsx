@@ -53,12 +53,25 @@ function App(): ReactElement {
     }
   }
 
+  function watchEvents(): void {
+    const { ethereum } = window;
+    if (typeof ethereum === 'undefined') {
+      return;
+    }
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
+    contract.on('BooksUpdated', () => {
+      updateOwnerStatusAndBalance();
+    });
+  }
+
   useEffect(() => {
     updateOwnerStatusAndBalance();
+    watchEvents();
   }, []);
 
   function getTreasuryBalanceValue(): string {
-    return `In treasury: ${balance} ETH`;
+    return `Treasury: ${balance} ETH`;
   }
 
   return (

@@ -14,8 +14,7 @@ interface IBook {
 }
 
 function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
-  const priceInETH: number = parseInt(ethers.utils.formatEther(price), 10);
-  const cover: string = 'https://images-na.ssl-images-amazon.com/images/I/41KdeY0zfOL._SX346_BO1,204,203,200_.jpg';
+  const priceInETH: number = parseFloat(ethers.utils.formatEther(price));
   const content: string = isAvailable ? 'Download (.pdf & .epub)' : `Buy (${priceInETH} ETH ≈ $${priceInETH * ethPrice})`;
 
   async function requestAccount(): Promise<void> {
@@ -40,7 +39,7 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
         const transaction = await contract.buyBook(id, { value: price });
         await transaction.wait();
         /* eslint-disable-next-line */
-        // alert('Book successfuly puchased');
+        alert('Book successfuly puchased');
       } catch (err) {
         /* eslint-disable-next-line */
         console.log(err);
@@ -56,7 +55,13 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
           {' '}
           sold
         </div>
-        <img className="book__image-container__image" src={cover} width="105" height="150" alt="Book cover" />
+        <img
+          className="book__image-container__image"
+          src={`${process.env.PUBLIC_URL}/images/token_economy_cover.jpg`}
+          width="105"
+          height="150"
+          alt="Book cover"
+        />
       </div>
 
       <div className="book__content">
@@ -66,10 +71,12 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
       </div>
 
       <div>
-        {/* eslint-disable-next-line */}
-        <button onClick={onClick} className={classNames('ebm__button', 'book-button', {
-          'ebm__button--available': isAvailable,
-        })}
+        <button
+          onClick={onClick}
+          type="button"
+          className={classNames('ebm__button', 'book-button', {
+            'ebm__button--available': isAvailable,
+          })}
         >
           { content }
         </button>

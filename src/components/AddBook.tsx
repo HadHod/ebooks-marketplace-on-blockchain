@@ -3,11 +3,6 @@ import { BigNumber, ethers } from 'ethers';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import './AddBook.scss';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
-// import pdfIcon from '../../public/images/pdf_icon.png';
-// import epubIcon from '../../public/images/epub_icon.png';
-// import { ReactComponent as PdfIcon } from './public/images/pdf-icon.svg';
-
-// TODO add webpack https://medium.com/age-of-awareness/setup-react-with-webpack-and-babel-5114a14a47e9
 
 const STEP: string = '0.0001';
 const DEFAULT_PRICE: BigNumber = BigNumber.from('0');
@@ -77,13 +72,19 @@ function AddBook(): ReactElement {
         <div>
           <label>
             <input type="file" accept="application/pdf" className="display-none" />
-            {/* eslint-disable-next-line */}
-            <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/267px-PDF_file_icon.svg.png" alt="upload pdf file" width="28" height="40" />
+            <img
+              className="add-book__row__icon"
+              src={`${process.env.PUBLIC_URL}/images/pdf_icon.png`}
+              alt="upload pdf file"
+            />
           </label>
           <label>
             <input type="file" accept="application/epub+zip" className="display-none" />
-            {/* eslint-disable-next-line */}
-            <img className="add-book__row__icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Icon_epub_file.svg/334px-Icon_epub_file.svg.png" alt="upload pdf file" width="28" height="40" />
+            <img
+              className="add-book__row__icon"
+              src={`${process.env.PUBLIC_URL}/images/epub_icon.png`}
+              alt="upload epub file"
+            />
           </label>
         </div>
       </div>

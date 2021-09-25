@@ -60,11 +60,35 @@ function Home(): ReactElement {
     watchEvents();
   }, []);
 
+  function loader(): ReactElement {
+    return (
+      <div className="loader-wrapper">
+        <div className="lds-ripple">
+          <div />
+          <div />
+        </div>
+      </div>
+    );
+  }
+
+  function libraryIsEmpty(): ReactElement {
+    return (
+      <div className="empty-library">
+        <img
+          className="empty-library__image"
+          src={`${process.env.PUBLIC_URL}/images/empty_library.png`}
+          alt="library is empty"
+        />
+        <span className="empty-library__text">Library is empty</span>
+      </div>
+    );
+  }
+
   return (
     <div className="home">
-      {isLoading && <div>Loading</div>}
+      {isLoading && loader()}
 
-      {!isLoading && books.length === 0 && <div>Library is empty</div>}
+      {!isLoading && books.length === 0 && libraryIsEmpty()}
 
       {books.map(({ id, price, isAvailable, numberOfSold }) => (
         <Book key={id} id={id} price={price} isAvailable={isAvailable} numberOfSold={numberOfSold} ethPrice={ethPrice} />
