@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useQuery } from '@apollo/client';
 import Book from './Book';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
-import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
 import { ETH_PRICE_QUERY } from '../shared/GraphQLQueries';
 import { Loader } from '../shared/components/Loader';
 import './Home.scss';

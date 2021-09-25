@@ -54,6 +54,7 @@ $link-size: 24px;
       text-decoration: none;
 
       &--connect-button {
+        cursor: pointer;
         padding: 44px;
         background-color: $main-background;
       }

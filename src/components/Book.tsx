@@ -1,13 +1,15 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import './Book.scss';
 import { ethers } from 'ethers';
 import classNames from 'classnames';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
-import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
 import { IBook } from '../shared/interfaces/IBook';
 import { requestAccount } from '../shared/UtilityFunctions';
+import { Loader } from '../shared/components/Loader';
 
 function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
+  const [isLoading, setIsLoading] = useState(false);
   const priceInETH: number = parseFloat(ethers.utils.formatEther(price));
   const content: string = isAvailable ? 'Download (.pdf & .epub)' : `Buy (${priceInETH} ETH ≈ $${priceInETH * ethPrice})`;
 
@@ -16,6 +18,7 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
       /* eslint-disable-next-line */
       alert('Downloading ...');
     } else {
+      setIsLoading(true);
       const { ethereum } = window;
       if (typeof ethereum === 'undefined') {
         return;
@@ -28,13 +31,40 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
       try {
         const transaction = await contract.buyBook(id, { value: price });
         await transaction.wait();
-        /* eslint-disable-next-line */
-        alert('Book successfuly puchased');
       } catch (err) {
-        /* eslint-disable-next-line */
-        console.log(err);
+        setIsLoading(false);
       }
     }
+  }
+
+  function watchEvents(): void {
+    const { ethereum } = window;
+    if (typeof ethereum === 'undefined') {
+      return;
+    }
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
+    contract.on('BooksUpdated', () => {
+      setIsLoading(false);
+    });
+  }
+
+  useEffect(() => {
+    watchEvents();
+  }, []);
+
+  function getButton(): ReactElement {
+    return (
+      <button
+        onClick={onClick}
+        type="button"
+        className={classNames('ebm__button', {
+          'ebm__button--available': isAvailable,
+        })}
+      >
+        { content }
+      </button>
+    );
   }
 
   return (
@@ -60,16 +90,9 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
         <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed eros vel dolor dignissim iaculis. Duis eu ligula feugiat, pulvinar leo a, pharetra leo. Sed at accumsan felis. Suspendisse quis elit euismod, maximus leo quis, lobortis urna. Nunc interdum elit ac magna scelerisque mollis. Ut non scelerisque purus, sed luctus magna. Mauris semper mauris sem, non maximus enim fringilla vel. Aliquam vitae neque at erat ultricies posuere. Vestibulum tincidunt libero felis, eu blandit nulla hendrerit eu. Praesent velit nulla, blandit quis semper sed, facilisis ac enim.</div>
       </div>
 
-      <div>
-        <button
-          onClick={onClick}
-          type="button"
-          className={classNames('ebm__button', 'book-button', {
-            'ebm__button--available': isAvailable,
-          })}
-        >
-          { content }
-        </button>
+      <div className="book__button-wrapper">
+        {isLoading && <Loader />}
+        {!isLoading && getButton()}
       </div>
     </div>
   );

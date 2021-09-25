@@ -10,12 +10,12 @@ import './App.scss';
 import Home from './components/Home';
 import AddBook from './components/AddBook';
 import BooksMarketplace from './artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
-import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from './Constants';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from './shared/Constants';
 import { getLastChars, requestAccount } from './shared/UtilityFunctions';
 
 // TODO Notification
 // TODO Error handling
-// TODO connect wallet
+// TODO Connect wallet
 
 function App(): ReactElement {
   const [userName, setUserName] = useState('');

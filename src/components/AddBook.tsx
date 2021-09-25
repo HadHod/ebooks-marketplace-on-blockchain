@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { BigNumber, ethers } from 'ethers';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import './AddBook.scss';
-import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../Constants';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
 
 const STEP: string = '0.0001';
 const DEFAULT_PRICE: BigNumber = BigNumber.from('0');
@@ -31,6 +31,8 @@ function AddBook(): ReactElement {
     } catch (error: unknown) {
       /* eslint-disable-next-line */
       console.log(error);
+    } finally {
+      setPrice(DEFAULT_PRICE);
     }
   }
 
@@ -63,6 +65,7 @@ function AddBook(): ReactElement {
           type="number"
           min={STEP}
           step={STEP}
+          value={ethers.utils.formatEther(price)}
           onChange={(e) => setPrice(ethers.utils.parseEther(e.target.value))}
           placeholder="Price in ETH"
         />

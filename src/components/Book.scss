@@ -45,8 +45,9 @@
     }
   }
 
-  &__button {
-    height: 42px;
-    width: 246px;
+  &__button-wrapper .lds-ripple {
+    width: 200px;
+    margin-right: -50px;
+    margin-left: 50px;
   }
 }
