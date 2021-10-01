@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 
 import "hardhat/console.sol";
 import "./Ownable.sol";
@@ -7,6 +7,8 @@ import "./Ownable.sol";
 // TODO send money to owner
 // TODO edit price
 // TODO assign every book to owner
+// TODO add unit tests coverage check
+// TODO remove book from every user after removing book
 
 contract BooksMarketplace is Ownable {
   event BooksUpdated();
@@ -35,7 +37,8 @@ contract BooksMarketplace is Ownable {
     (uint256 index, bool isAvailable) = indexOf(booksIds, _bookId);
     require(isAvailable, 'Book does not exists');
     delete booksIds[index];
-    booksIdToPrice[_bookId] = 0;
+    delete booksIdToPrice[_bookId];
+    delete booksIdToNumberOfSold[_bookId];
   }
 
   function getBooks() external view returns (string[] memory, uint256[] memory, bool[] memory, uint256[] memory) {

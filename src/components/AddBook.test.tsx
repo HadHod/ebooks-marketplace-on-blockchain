@@ -16,13 +16,13 @@ describe('AddBook', () => {
     expect(screen.getByText(/Files/i)).toBeInTheDocument();
   });
 
-  it('Add book button should be disable by default', () => {
+  it('Add book button should be disabled by default', () => {
     const addBookButton = screen.getByText(/Add book/i);
     expect(addBookButton).toBeInTheDocument();
     expect(addBookButton).toBeDisabled();
   });
 
-  it('Add book button should not be disable after input change', () => {
+  it('Add book button should not be disabled after input change', () => {
     const addBookButton = screen.getByText(/Add book/i);
     expect(addBookButton).toBeInTheDocument();
     const [priceInput] = screen.getAllByPlaceholderText(/Price in ETH/i) as HTMLInputElement[];

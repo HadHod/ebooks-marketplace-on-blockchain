@@ -5,13 +5,13 @@ import classNames from 'classnames';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
 import { IBook } from '../shared/interfaces/IBook';
-import { requestAccount } from '../shared/UtilityFunctions';
+import { requestAccount, round } from '../shared/UtilityFunctions';
 import { Loader } from '../shared/components/Loader';
 
 function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
   const [isLoading, setIsLoading] = useState(false);
   const priceInETH: number = parseFloat(ethers.utils.formatEther(price));
-  const content: string = isAvailable ? 'Download (.pdf & .epub)' : `Buy (${priceInETH} ETH ≈ $${priceInETH * ethPrice})`;
+  const content: string = isAvailable ? 'Download' : `Buy (${priceInETH} ETH ≈ $${round(priceInETH * ethPrice)})`;
 
   async function onClick(): Promise<void> {
     if (isAvailable) {

@@ -13,7 +13,7 @@ import BooksMarketplace from './artifacts/contracts/BooksMarketplace.sol/BooksMa
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from './shared/Constants';
 import { getLastChars, requestAccount } from './shared/UtilityFunctions';
 
-// TODO Notification
+// TODO Notifications
 // TODO Error handling
 // TODO Connect wallet
 
