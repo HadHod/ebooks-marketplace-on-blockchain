@@ -1,15 +1,26 @@
-# Basic Sample Hardhat Project
+# eBooks marketplace on ethereum blockchain
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
-
-Try running some of the following tasks:
-
+run front-end
 ```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+npm run start
+```
+
+run local node
+```shell
+npm run node:local
+```
+
+deploy contract locally
+```shell
+npm run deploy:local
+```
+
+run front-end tests
+```shell
+npm run test
+```
+
+run contracts tests
+```
+truffle test
 ```
