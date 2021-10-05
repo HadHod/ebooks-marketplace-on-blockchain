@@ -26,6 +26,6 @@ describe('Book', () => {
   });
 
   it('should render page elments', () => {
-    expect(screen.getByText(/Download \(\.pdf & \.epub\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Download/i)).toBeInTheDocument();
   });
 });

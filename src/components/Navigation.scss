@@ -1,0 +1,59 @@
+@import "../shared/styles/Palette.scss";
+@import "../shared/styles/Button.scss";
+
+$link-size: 24px;
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  width: 1024px;
+  padding: 20px;
+  user-select: none;
+
+  &__header {
+    display: flex;
+    align-items: center;
+
+    .navigation__link {
+      margin-right: 16px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+
+    &__treasury {
+      display: flex;
+      align-items: center;
+      margin-right: 16px;
+    }
+
+    .navigation__link:not(:last-child) {
+      margin-right: 16px;
+    }
+  }
+
+  &__link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $main-font;
+    padding: 32px;
+    border: 2px solid white;
+    border-radius: 50%;
+    width: $link-size;
+    height: $link-size;
+    text-decoration: none;
+
+    &--connect-button {
+      cursor: pointer;
+      padding: 44px;
+      background-color: $main-background;
+    }
+
+    &:hover {
+      color: $hover;
+      border: 2px solid $hover;
+    }
+  }
+}

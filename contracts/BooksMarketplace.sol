@@ -9,6 +9,7 @@ import "./Ownable.sol";
 // TODO assign every book to owner
 // TODO add unit tests coverage check
 // TODO remove book from every user after removing book
+// TODO book as a NFT, unique id, can be sold by owner
 
 contract BooksMarketplace is Ownable {
   event BooksUpdated();
