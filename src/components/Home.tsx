@@ -7,6 +7,7 @@ import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
 import { ETH_PRICE_QUERY } from '../shared/GraphQLQueries';
 import { Loader } from '../shared/components/Loader';
 import './Home.scss';
+import { getEthereum } from '../shared/UtilityFunctions';
 
 function Home(): ReactElement {
   const [books, setBooks] = useState([]);
@@ -16,11 +17,7 @@ function Home(): ReactElement {
 
   async function getBooks(): Promise<void> {
     setIsLoading(true);
-    const { ethereum } = window;
-    if (typeof ethereum === 'undefined') {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     try {
       const [booksIds, prices, available, sold] = await contract.getBooks();
@@ -38,11 +35,7 @@ function Home(): ReactElement {
   }
 
   function watchEvents(): void {
-    const { ethereum } = window;
-    if (typeof ethereum === 'undefined') {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     contract.on('BooksUpdated', () => {
       getBooks();

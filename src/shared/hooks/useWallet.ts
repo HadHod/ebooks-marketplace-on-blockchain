@@ -1,14 +1,14 @@
 import { ethers } from 'ethers';
-import { requestAccount } from '../UtilityFunctions';
+import { getEthereum, requestAccount } from '../UtilityFunctions';
 
-export function useWallet(newAddressCallback: any): any {
+interface UseWallet {
+  connectWallet: any, // () => Promise<void>,
+}
+
+export function useWallet(newAddressCallback: any): UseWallet {
   async function connectWallet(): Promise<void> {
-    const { ethereum } = window;
-    if (typeof ethereum === 'undefined') {
-      return;
-    }
     await requestAccount();
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(getEthereum());
     const signer = provider.getSigner();
     const address = await signer.getAddress();
     newAddressCallback(address);

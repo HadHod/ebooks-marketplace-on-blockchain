@@ -3,9 +3,9 @@ import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
-import { getLastChars } from '../shared/UtilityFunctions';
+import { getEthereum, getLastChars } from '../shared/UtilityFunctions';
 import './Navigation.scss';
-import { useWallet } from '../shared/hooks/useWallet';
+import { useWallet } from '../shared/hooks';
 
 function Navigation(): ReactElement {
   const [userName, setUserName] = useState('');
@@ -14,11 +14,7 @@ function Navigation(): ReactElement {
   const { connectWallet } = useWallet(setUserName);
 
   async function updateOwnerStatusAndBalance(): Promise<void> {
-    const { ethereum } = window;
-    if (typeof ethereum === 'undefined') {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     try {
       setBalance(ethers.utils.formatEther(await contract.getBalance()));
@@ -30,11 +26,7 @@ function Navigation(): ReactElement {
   }
 
   function watchEvents(): void {
-    const { ethereum } = window;
-    if (typeof ethereum === 'undefined') {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     contract.on('BooksUpdated', () => {
       updateOwnerStatusAndBalance();

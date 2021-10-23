@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
 import { IBook } from '../shared/interfaces/IBook';
-import { requestAccount, round } from '../shared/UtilityFunctions';
+import { getEthereum, requestAccount, round } from '../shared/UtilityFunctions';
 import { Loader } from '../shared/components/Loader';
 
 function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactElement {
@@ -19,13 +19,8 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
       alert('Downloading ...');
     } else {
       setIsLoading(true);
-      const { ethereum } = window;
-      if (typeof ethereum === 'undefined') {
-        return;
-      }
-
       await requestAccount();
-      const provider = new ethers.providers.Web3Provider(ethereum);
+      const provider = new ethers.providers.Web3Provider(getEthereum());
       const signer = provider.getSigner();
       const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, signer);
       try {
@@ -38,11 +33,7 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
   }
 
   function watchEvents(): void {
-    const { ethereum } = window;
-    if (typeof ethereum === 'undefined') {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
     contract.on('BooksUpdated', () => {
       setIsLoading(false);

@@ -3,6 +3,7 @@ import { BigNumber, ethers } from 'ethers';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
 import './AddBook.scss';
 import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
+import { getEthereum, requestAccount } from '../shared/UtilityFunctions';
 
 const STEP: string = '0.0001';
 const DEFAULT_PRICE: BigNumber = BigNumber.from('0');
@@ -11,17 +12,9 @@ function AddBook(): ReactElement {
   const [price, setPrice] = useState(DEFAULT_PRICE);
   const [isDisabled, setIsDisabled] = useState(true);
 
-  async function requestAccount(): Promise<void> {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-  }
-
   async function addBook(): Promise<void> {
-    const { ethereum } = window;
-    if (typeof ethereum === 'undefined') {
-      return;
-    }
     await requestAccount();
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const provider = new ethers.providers.Web3Provider(getEthereum());
     const signer = provider.getSigner();
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, signer);
     const randomId: string = Math.random().toString(32).substr(2, 9); // TODO get id from DB
