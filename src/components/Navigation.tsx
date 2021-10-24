@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { Link } from 'react-router-dom';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
-import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BOOKS_UPDATE_EVENT } from '../shared/Constants';
 import { getEthereum, getLastChars } from '../shared/UtilityFunctions';
 import './Navigation.scss';
 import { useWallet } from '../shared/hooks';
@@ -28,7 +28,7 @@ function Navigation(): ReactElement {
   function watchEvents(): void {
     const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
-    contract.on('BooksUpdated', () => {
+    contract.on(BOOKS_UPDATE_EVENT, () => {
       updateOwnerStatusAndBalance();
     });
   }

@@ -3,7 +3,7 @@ import './Book.scss';
 import { ethers } from 'ethers';
 import classNames from 'classnames';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
-import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BOOKS_UPDATE_EVENT } from '../shared/Constants';
 import { IBook } from '../shared/interfaces/IBook';
 import { getEthereum, requestAccount, round } from '../shared/UtilityFunctions';
 import { Loader } from '../shared/components/Loader';
@@ -12,6 +12,10 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
   const [isLoading, setIsLoading] = useState(false);
   const priceInETH: number = parseFloat(ethers.utils.formatEther(price));
   const content: string = isAvailable ? 'Download' : `Buy (${priceInETH} ETH ≈ $${round(priceInETH * ethPrice)})`;
+
+  function turnOffLoading(): void {
+    setIsLoading(false);
+  }
 
   async function onClick(): Promise<void> {
     if (isAvailable) {
@@ -32,16 +36,13 @@ function Book({ id, isAvailable, numberOfSold, price, ethPrice }: IBook): ReactE
     }
   }
 
-  function watchEvents(): void {
+  useEffect(() => {
     const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
-    contract.on('BooksUpdated', () => {
-      setIsLoading(false);
-    });
-  }
-
-  useEffect(() => {
-    watchEvents();
+    contract.on(BOOKS_UPDATE_EVENT, turnOffLoading);
+    return () => {
+      contract.off(BOOKS_UPDATE_EVENT, turnOffLoading);
+    };
   }, []);
 
   function getButton(): ReactElement {

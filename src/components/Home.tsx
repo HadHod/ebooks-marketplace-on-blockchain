@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useQuery } from '@apollo/client';
 import Book from './Book';
 import BooksMarketplace from '../artifacts/contracts/BooksMarketplace.sol/BooksMarketplace.json';
-import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS } from '../shared/Constants';
+import { BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BOOKS_UPDATE_EVENT } from '../shared/Constants';
 import { ETH_PRICE_QUERY } from '../shared/GraphQLQueries';
 import { Loader } from '../shared/components/Loader';
 import './Home.scss';
@@ -37,7 +37,7 @@ function Home(): ReactElement {
   function watchEvents(): void {
     const provider = new ethers.providers.Web3Provider(getEthereum());
     const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
-    contract.on('BooksUpdated', () => {
+    contract.on(BOOKS_UPDATE_EVENT, () => {
       getBooks();
     });
   }
