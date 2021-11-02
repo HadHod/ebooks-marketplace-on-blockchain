@@ -1,6 +1,4 @@
-import { EthereumProvider } from 'hardhat/types';
-
-export function getEthereum(): any { // ExternalProvider | JsonRpcFetchFunc
+export function getEthereum(): any { // ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc
   const { ethereum } = window;
   return typeof ethereum === 'undefined' ? null : ethereum;
 }

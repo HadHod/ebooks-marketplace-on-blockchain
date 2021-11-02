@@ -34,17 +34,15 @@ function Home(): ReactElement {
     }
   }
 
-  function watchEvents(): void {
-    const provider = new ethers.providers.Web3Provider(getEthereum());
-    const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
-    contract.on(BOOKS_UPDATE_EVENT, () => {
-      getBooks();
-    });
-  }
-
   useEffect(() => {
     getBooks();
-    watchEvents();
+
+    const provider = new ethers.providers.Web3Provider(getEthereum());
+    const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
+    contract.on(BOOKS_UPDATE_EVENT, getBooks);
+    return () => {
+      contract.off(BOOKS_UPDATE_EVENT, getBooks);
+    };
   }, []);
 
   function showLoader(): ReactElement {

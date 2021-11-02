@@ -25,17 +25,15 @@ function Navigation(): ReactElement {
     }
   }
 
-  function watchEvents(): void {
-    const provider = new ethers.providers.Web3Provider(getEthereum());
-    const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
-    contract.on(BOOKS_UPDATE_EVENT, () => {
-      updateOwnerStatusAndBalance();
-    });
-  }
-
   useEffect(() => {
     updateOwnerStatusAndBalance();
-    watchEvents();
+
+    const provider = new ethers.providers.Web3Provider(getEthereum());
+    const contract = new ethers.Contract(BOOKS_MARKETPLACE_CONTRACT_ADDERSS, BooksMarketplace.abi, provider);
+    contract.on(BOOKS_UPDATE_EVENT, updateOwnerStatusAndBalance);
+    return () => {
+      contract.off(BOOKS_UPDATE_EVENT, updateOwnerStatusAndBalance);
+    };
   }, []);
 
   return (
