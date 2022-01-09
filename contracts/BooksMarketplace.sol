@@ -61,6 +61,10 @@ contract BooksMarketplace is Ownable {
     return address(this).balance;
   }
 
+  function sendBalanceToOwner() external payable {
+    owner.transfer(getBalance());
+  }
+
   function buyBook(string memory _bookId) external payable {
     uint256 price = booksIdToPrice[_bookId];
     require(msg.value == price, 'wrong value');
